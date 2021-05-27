@@ -1,0 +1,87 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /jmssender
+
+queues:
+  channel-dev: CH.DEV
+  channel-pre: CH.WAS
+  manager: QM.APP
+
+default-local-queue-configuration: &local
+  url: localhost:61616
+  username: local
+  password: local
+
+default-dev-queue-configuration: &des
+  host: ${queues.environments.des.host}
+  port: ${queues.environments.des.port}
+  channel: ${queues.channel-dev}
+  queueManager: ${queues.manager}
+  username: ${queues.environments.des.username}
+  password: ${queues.environments.des.password}
+
+default-pre-queue-configuration: &pre
+  host: ${queues.environments.pre.host}
+  port: ${queues.environments.pre.port}
+  channel: ${queues.channel-pre}
+  queueManager: ${queues.manager}
+  username: ${queues.environments.pre.username}
+  password: ${queues.environments.pre.password}
+
+jms-queues:
+  queueConfigurations:
+    - alias: orchestrator
+      name: ORQ.EXPEDLEX
+      messagePropertiesMap:
+        messageType: orchestratorDocumentsCreationResult
+      environmentConnectionProperties:
+        local: *local
+        des: *des
+    - alias: retro
+      name: RETRO.INFORETROLEX
+      messagePropertiesMap:
+        messageType: PACKAGES_ASSIGNMENT_TO_TRANSPORT
+      environmentConnectionProperties:
+        local: *local
+        des: *des
+        pre: *pre
+    - alias: hit
+      name: LEXAPWEB.INCOMING
+      messagePropertiesMap:
+        messageType: GC
+      environmentConnectionProperties:
+        local: *local
+        des: *des
+    - alias: lexdoc-goods-allocate
+      name: "global.exporttr.lexdocmr.global.exporttr.lexexped.public.goodsAllocate"
+      messagePropertiesMap:
+        messageType: SHIPMENT_GOODS_ALLOCATE
+      environmentConnectionProperties:
+        local: *local
+        des: *des
+        pre: *pre
+    - alias: lexexped-go-updated
+      name: "global.exporttr.lexexped.global.exporttr.lexforec.public.groundOperationUpdated"
+      messagePropertiesMap:
+        messageType: GROUND_OPERATION_UPDATED
+      environmentConnectionProperties:
+        local: *local
+        des: *des
+        pre: *pre
+    - alias: lexshinv-delivery-note
+      name: LEX.RETROALB
+      messagePropertiesMap:
+        messageType: ALBARAN_CREATION
+      environmentConnectionProperties:
+        local: *local
+        des: *des
+        pre: *pre
+    - alias: lexshinv-invoice
+      name: LEX.RETROALB
+      messagePropertiesMap:
+        messageType: FACTURA
+      environmentConnectionProperties:
+        local: *local
+        des: *des
+        pre: *pre

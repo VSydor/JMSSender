@@ -1,0 +1,12 @@
+queues:
+  environments:
+    des:
+      host: host
+      port: 1717
+      username: me
+      password: pass
+    pre:
+      host: host
+      port: 1718
+      username: you
+      password: pass2
